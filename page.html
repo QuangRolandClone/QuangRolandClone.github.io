@@ -72,7 +72,7 @@
             function displayElements(isLoggedIn) {
                 if (isLoggedIn) {
                     document.getElementById('logoutButton').setAttribute('style', 'display:block');
-                    document.getElementById('getLongLivedPageTokenButton').setAttribute('style', 'display:block');
+                    document.getElementById('getLongLivedPageTokenButton').setAttribute('style', 'display:none');
                     document.getElementById('displayPageFeedButton').setAttribute('style', 'display:block');
                     document.getElementById('pageFeed').setAttribute('style', 'display:block');
                 }
@@ -102,7 +102,7 @@
 
             // Canteen page
             var canteenPageId = "111411690697844";
-            var canteenPageToken;
+            var canteenPageToken = "EAAJ16N6kaOIBAIoZBTEh9ZBbPusZBGQHN4guxVaGuZAslZAXQ5r0tQzz6UBbgZCdBGmXQDTvXZClMR6MmlnX05J2YBfRWLyFtvLU5OL8kpmWoVxdHvfuFLTLNpME55NVeP7mZCaTOSOskkLNW18ZAq7iSEbxDfMrUVpIfwOpLOqbF6wZDZD";
             var canteenPageJSON;
 
             // Get long-lived page token
