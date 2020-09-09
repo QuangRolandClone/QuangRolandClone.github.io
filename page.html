@@ -209,7 +209,10 @@
                                 var likePagePostButton = document.createElement("button");
                                 likePagePostButton.innerHTML = "Like Post";
                                 likePagePostButton.onclick = async function(){
-                                    var likePagePostJSON = await likePagePostThroughAPI(canteenPageJSON.feed.data[i].id, canteenPageToken);
+                                    var loginStateJSON = await checkLoginState();
+                                    var longLivedUserTokenJSON = await getLongLivedUserToken(loginStateJSON.authResponse.accessToken);
+
+                                    var likePagePostJSON = await likePagePostThroughAPI(canteenPageJSON.feed.data[i].id, longLivedUserTokenJSON.access_token);
 
                                     if(likePagePostJSON && !likePagePostJSON.error) {
                                         console.log('Successfully Like');
