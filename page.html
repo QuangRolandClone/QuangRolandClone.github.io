@@ -243,7 +243,7 @@
                                 var commentToPostButton = document.createElement("button");
                                 commentToPostButton.innerHTML = "Comment to this post";
                                 commentToPostButton.onclick = async function(){
-                                    var commentToPostJSON = await commentThroughAPI(document.getElementById('postToPageMessage' + i).value, canteenPageJSON.feed.data[i].id, canteenPageToken);
+                                    var commentToPostJSON = await commentThroughAPI(document.getElementById('commentToPostMessage' + i).value, canteenPageJSON.feed.data[i].id, canteenPageToken);
 
                                     if(commentToPostJSON && !commentToPostJSON.error) {
                                         console.log('Successfully Comment');
