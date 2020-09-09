@@ -217,13 +217,47 @@
                                             var comment = document.createElement('div');
                                             comment.innerHTML = 'Comment: ' + canteenPageJSON.feed.data[i].comments.data[j].message;
                                             post.appendChild(comment);
+
+                                            // Reply to comment
+                                            // Reply to comment title
+                                            var replyToCommentTitle = document.createElement('h5');
+                                            replyToCommentTitle.innerHTML = "Reply to this comment";
+                                            post.appendChild(replyToCommentTitle);
+
+                                            // Reply to comment message 
+                                            var replyToCommentMessageDiv = document.createElement('div');
+                                            post.appendChild(replyToCommentMessageDiv);
+
+                                            var replyToCommentMessage = document.createElement("input");
+                                            replyToCommentMessage.setAttribute("type", "text");
+                                            replyToCommentMessage.setAttribute("id", "replyToCommentMessage" + i + "and" + j);
+                                            replyToCommentMessageDiv.appendChild(replyToCommentMessage);
+
+                                            // Reply to comment button
+                                            var replyToCommentButtonDiv = document.createElement('div');
+                                            post.appendChild(replyToCommentButtonDiv);
+
+                                            var replyToCommentButton = document.createElement("button");
+                                            replyToCommentButton.innerHTML = "Reply";
+                                            replyToCommentButton.onclick = async function(){
+                                                var replyToCommentJSON = await commentThroughAPI(document.getElementById('replyToCommentMessage' + i + "and" + j).value, canteenPageJSON.feed.data[i].comments.data[j].id, canteenPageToken);
+
+                                                if(replyToCommentJSON && !replyToCommentJSON.error) {
+                                                    console.log('Successfully Comment');
+                                                }
+                                                else {
+                                                    console.log("Error:");
+                                                    console.log(replyToCommentJSON);
+                                                }
+                                            };
+                                            replyToCommentButtonDiv.appendChild(replyToCommentButton);
                                         }
                                     }
                                 }
 
                                 // Comment to post
                                 // Comment to post title
-                                var commentToPostTitle = document.createElement('h4');
+                                var commentToPostTitle = document.createElement('h5');
                                 commentToPostTitle.innerHTML = "Comment to this post";
                                 post.appendChild(commentToPostTitle);
 
@@ -241,7 +275,7 @@
                                 post.appendChild(commentToPostButtonDiv);
 
                                 var commentToPostButton = document.createElement("button");
-                                commentToPostButton.innerHTML = "Comment to this post";
+                                commentToPostButton.innerHTML = "Comment";
                                 commentToPostButton.onclick = async function(){
                                     var commentToPostJSON = await commentThroughAPI(document.getElementById('commentToPostMessage' + i).value, canteenPageJSON.feed.data[i].id, canteenPageToken);
 
