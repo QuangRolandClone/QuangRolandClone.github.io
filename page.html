@@ -235,10 +235,7 @@
                                             var replyToCommentButton = document.createElement("button");
                                             replyToCommentButton.innerHTML = "Reply";
                                             replyToCommentButton.onclick = async function(){
-                                                var loginStateJSON = await checkLoginState();
-                                                var longLivedUserTokenJSON = await getLongLivedUserToken(loginStateJSON.authResponse.accessToken);
-
-                                                var replyToCommentJSON = await commentThroughAPI(document.getElementById('replyToCommentMessage' + i + "and" + j).value, longLivedUserTokenJSON.access_token, canteenPageToken);
+                                                var replyToCommentJSON = await commentThroughAPI(document.getElementById('replyToCommentMessage' + i + "and" + j).value, canteenPageJSON.feed.data[i].comments.data[j].id, canteenPageToken);
 
                                                 if(replyToCommentJSON && !replyToCommentJSON.error) {
                                                     console.log('Successfully Comment');
@@ -275,10 +272,7 @@
                                 var commentToPostButton = document.createElement("button");
                                 commentToPostButton.innerHTML = "Comment";
                                 commentToPostButton.onclick = async function(){
-                                    var loginStateJSON = await checkLoginState();
-                                    var longLivedUserTokenJSON = await getLongLivedUserToken(loginStateJSON.authResponse.accessToken);
-
-                                    var commentToPostJSON = await commentThroughAPI(document.getElementById('commentToPostMessage' + i).value, longLivedUserTokenJSON.access_token, canteenPageToken);
+                                    var commentToPostJSON = await commentThroughAPI(document.getElementById('commentToPostMessage' + i).value, canteenPageJSON.feed.data[i].id, canteenPageToken);
 
                                     if(commentToPostJSON && !commentToPostJSON.error) {
                                         console.log('Successfully Comment');
