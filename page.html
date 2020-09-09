@@ -182,17 +182,6 @@
                                 link.innerHTML = '<a href="' + canteenPageJSON.feed.data[i].permalink_url + '" target="_blank">Link to the post</a>';
                                 post.appendChild(link);
 
-                                // Comment
-                                if (canteenPageJSON.feed.data[i].comments) {
-                                    for (let j in canteenPageJSON.feed.data[i].comments.data) {
-                                        if (canteenPageJSON.feed.data[i].comments.data[j].message) {
-                                            var comment = document.createElement('div');
-                                            comment.innerHTML = 'Comment: ' + canteenPageJSON.feed.data[i].comments.data[j].message;
-                                            post.appendChild(comment);
-                                        }
-                                    }
-                                }
-
                                 // Get total like count of the post
                                 var pagePostLikeJSON = await getPagePostLikeFromAPI(canteenPageJSON.feed.data[i].id, canteenPageToken);
 
@@ -209,10 +198,7 @@
                                 var likePagePostButton = document.createElement("button");
                                 likePagePostButton.innerHTML = "Like Post";
                                 likePagePostButton.onclick = async function(){
-                                    var loginStateJSON = await checkLoginState();
-                                    var longLivedUserTokenJSON = await getLongLivedUserToken(loginStateJSON.authResponse.accessToken);
-
-                                    var likePagePostJSON = await likePagePostThroughAPI(canteenPageJSON.feed.data[i].id, longLivedUserTokenJSON.access_token);
+                                    var likePagePostJSON = await likeThroughAPI(canteenPageJSON.feed.data[i].id, canteenPageToken);
 
                                     if(likePagePostJSON && !likePagePostJSON.error) {
                                         console.log('Successfully Like');
@@ -223,6 +209,51 @@
                                     }
                                 };
                                 likePagePostButtonDiv.appendChild(likePagePostButton);
+
+                                // Get comment
+                                if (canteenPageJSON.feed.data[i].comments) {
+                                    for (let j in canteenPageJSON.feed.data[i].comments.data) {
+                                        if (canteenPageJSON.feed.data[i].comments.data[j].message) {
+                                            var comment = document.createElement('div');
+                                            comment.innerHTML = 'Comment: ' + canteenPageJSON.feed.data[i].comments.data[j].message;
+                                            post.appendChild(comment);
+                                        }
+                                    }
+                                }
+
+                                // Comment to post
+                                // Comment to post title
+                                var commentToPostTitle = document.createElement('h4');
+                                commentToPostTitle.innerHTML = "Comment to this post";
+                                post.appendChild(commentToPostTitle);
+
+                                // Comment to post message 
+                                var commentToPostMessageDiv = document.createElement('div');
+                                post.appendChild(commentToPostMessageDiv);
+
+                                var commentToPostMessage = document.createElement("input");
+                                commentToPostMessage.setAttribute("type", "text");
+                                commentToPostMessage.setAttribute("id", "commentToPostMessage" + i);
+                                commentToPostMessageDiv.appendChild(commentToPostMessage);
+
+                                // Comment to post button
+                                var commentToPostButtonDiv = document.createElement('div');
+                                post.appendChild(commentToPostButtonDiv);
+
+                                var commentToPostButton = document.createElement("button");
+                                commentToPostButton.innerHTML = "Comment to this post";
+                                commentToPostButton.onclick = async function(){
+                                    var commentToPostJSON = await commentThroughAPI(document.getElementById('postToPageMessage' + i).value, canteenPageJSON.feed.data[i].id, canteenPageToken);
+
+                                    if(commentToPostJSON && !commentToPostJSON.error) {
+                                        console.log('Successfully Comment');
+                                    }
+                                    else {
+                                        console.log("Error:");
+                                        console.log(commentToPostJSON);
+                                    }
+                                };
+                                commentToPostButtonDiv.appendChild(commentToPostButton);
                             }
                         }
                     }
@@ -303,10 +334,19 @@
                 });
             }
 
-            // Like page post through API
-            function likePagePostThroughAPI(pagePostId, pageToken) {
+            // Like through API
+            function likeThroughAPI(objectId, pageToken) {
                 return new Promise((resolve, reject) => {
-                    FB.api('/' + pagePostId + '/likes', 'post', { access_token:pageToken }, function(response) {
+                    FB.api('/' + objectId + '/likes', 'post', { access_token:pageToken }, function(response) {
+                        resolve(response);
+                    });
+                });
+            }
+
+            // Comment through API
+            function commentThroughAPI(message, objectId, pageToken) {
+                return new Promise((resolve, reject) => {
+                    FB.api('/' + objectId + '/comments', 'post', { message:message, access_token:pageToken }, function(response) {
                         resolve(response);
                     });
                 });
