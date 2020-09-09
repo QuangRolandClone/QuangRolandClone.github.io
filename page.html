@@ -235,7 +235,10 @@
                                             var replyToCommentButton = document.createElement("button");
                                             replyToCommentButton.innerHTML = "Reply";
                                             replyToCommentButton.onclick = async function(){
-                                                var replyToCommentJSON = await commentThroughAPI(document.getElementById('replyToCommentMessage' + i + "and" + j).value, canteenPageJSON.feed.data[i].comments.data[j].id, canteenPageToken);
+                                                var loginStateJSON = await checkLoginState();
+                                                var longLivedUserTokenJSON = await getLongLivedUserToken(loginStateJSON.authResponse.accessToken);
+
+                                                var replyToCommentJSON = await commentThroughAPI(document.getElementById('replyToCommentMessage' + i + "and" + j).value, longLivedUserTokenJSON.access_token, canteenPageToken);
 
                                                 if(replyToCommentJSON && !replyToCommentJSON.error) {
                                                     console.log('Successfully Comment');
