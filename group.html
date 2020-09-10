@@ -60,41 +60,25 @@
                 if (response.status === 'connected') {
                     console.log('Logged in');
                     displayElements(true);
-                    showWelcome();
+                    displayGroupFeed();
                 }
                 else {
                     console.log('Not Logged in');
                     displayElements(false);
+                    window.location.href = "index.html";
                 }
             }
 
             // Display the page elements based on the login state
             function displayElements(isLoggedIn) {
                 if (isLoggedIn) {
-                    document.getElementById('loginButton').setAttribute('style', 'display:none');
                     document.getElementById('logoutButton').setAttribute('style', 'display:block');
-                    document.getElementById('welcomeMessage').setAttribute('style', 'display:block');
+                    document.getElementById('groupFeed').setAttribute('style', 'display:block');
                 }
                 else {
-                    document.getElementById('loginButton').setAttribute('style', 'display:block');
                     document.getElementById('logoutButton').setAttribute('style', 'display:none');
-                    document.getElementById('welcomeMessage').setAttribute('style', 'display:none');
+                    document.getElementById('groupFeed').setAttribute('style', 'display:none');
                 }
-            }
-
-            // Login
-            async function login() {
-                var loginJSON = await loginThroughFacebook();
-                statusChangeCallback(loginJSON);
-            }
-
-            // Login through Facebook
-            function loginThroughFacebook() {
-                return new Promise((resolve, reject) => {
-                    FB.login(function(response) {
-                        resolve(response);
-                    }, {scope: 'public_profile, email, pages_show_list, pages_manage_posts, pages_manage_metadata, pages_read_engagement, pages_manage_engagement, pages_read_user_content, groups_access_member_info, publish_to_groups'});
-                });
             }
 
             // Logout
@@ -113,9 +97,39 @@
                 });
             }
 
-            // Show welcome message
-            function showWelcome() {
-                document.getElementById('welcomeMessage').innerHTML = '<h1>Welcome</h1>';
+            // Group
+            var canteenGroupId = "993102224448949";
+
+            // Display group feed
+            async function displayGroupFeed() {
+                var groupFeed = document.createElement('div');
+                document.getElementById('groupFeed').appendChild(groupFeed);
+
+                // Title
+                var title = document.createElement('h1');
+                title.innerHTML = "Group Feed";
+                groupFeed.appendChild(title);
+
+                var canteenGroupJSON = await getGroupFeedFromAPI(canteenGroupId);
+                console.log(canteenGroupJSON);
+            }
+
+            // Get group from API
+            function getGroupFromAPI() {
+                return new Promise((resolve, reject) => {
+                    FB.api('/me?fields=groups', function(response) {
+                        resolve(response);
+                    });
+                });
+            }
+
+            // Get group feed from API
+            function getGroupFeedFromAPI(groupId) {
+                return new Promise((resolve, reject) => {
+                    FB.api('/' + groupId + '?fields=name,feed{id,message,permalink_url,comments{message}}', function(response) {
+                        resolve(response);
+                    });
+                });
             }
         </script>
 
@@ -132,16 +146,6 @@
             
             <div class="collapse navbar-collapse" id="navbar">
                 <ul class="navbar-nav ml-auto"> <!-- ml-auto: stick to the right -->
-                    <!-- Facebook Default Login Button -->
-                    <!-- <div class="fb-login-button"
-                        id="loginButton"
-                        scope="public_profile, email, pages_show_list, pages_manage_posts, pages_manage_metadata, pages_read_engagement, pages_manage_engagement, pages_read_user_content"
-                        onlogin="checkLoginState()">
-                    </div> -->
-
-                    <!-- Login Button -->
-                    <button id="loginButton" onclick="login();" style="display:none">Login</button>
-                    
                     <!-- Logout Button -->
                     <button id="logoutButton" onclick="logout();" style="display:none">Logout</button>
                 </ul>
@@ -149,8 +153,8 @@
         </nav>
 
         <div class="container">
-            <!-- Welcome Message -->
-            <div id="welcomeMessage"></div>
+            <!-- Group Feed -->
+            <div id="groupFeed"></div>
         </div>
     </body>
 </html>
