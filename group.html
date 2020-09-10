@@ -102,6 +102,8 @@
 
             // Display group feed
             async function displayGroupFeed() {
+                var loginStateJSON = await checkLoginState();
+
                 var groupFeed = document.createElement('div');
                 document.getElementById('groupFeed').appendChild(groupFeed);
 
@@ -110,7 +112,7 @@
                 title.innerHTML = "Group Feed";
                 groupFeed.appendChild(title);
 
-                var canteenGroupJSON = await getGroupFeedFromAPI(canteenGroupId);
+                var canteenGroupJSON = await getGroupFeedFromAPI(canteenGroupId, loginStateJSON.authResponse.accessToken);
                 console.log(canteenGroupJSON);
             }
 
@@ -124,9 +126,9 @@
             }
 
             // Get group feed from API
-            function getGroupFeedFromAPI(groupId) {
+            function getGroupFeedFromAPI(groupId, userToken) {
                 return new Promise((resolve, reject) => {
-                    FB.api('/' + groupId + '?fields=name,feed{id,message,permalink_url,comments{message}}', function(response) {
+                    FB.api('/' + groupId + '?fields=name,feed{id,message,permalink_url,comments{message}}', { access_token:userToken }, function(response) {
                         resolve(response);
                     });
                 });
