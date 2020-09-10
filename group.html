@@ -146,6 +146,34 @@
                                 link.innerHTML = '<a href="' + canteenGroupJSON.feed.data[i].permalink_url + '" target="_blank">Link to the post</a>';
                                 post.appendChild(link);
 
+                                // Get total like count of the post
+                                var groupPostLikeJSON = await getGroupPostLikeFromAPI(canteenGroupJSON.feed.data[i].id, loginStateJSON.authResponse.accessToken);
+
+                                if(groupPostLikeJSON && !groupPostLikeJSON.error && groupPostLikeJSON.likes.summary.total_count > 0) {
+                                    var like = document.createElement('div');
+                                    like.innerHTML = 'Total Like Count: ' + groupPostLikeJSON.likes.summary.total_count;
+                                    post.appendChild(like);
+                                }
+
+                                // Like group post
+                                var likeGroupPostButtonDiv = document.createElement('div');
+                                post.appendChild(likeGroupPostButtonDiv);
+
+                                var likeGroupPostButton = document.createElement("button");
+                                likeGroupPostButton.innerHTML = "Like Post";
+                                likeGroupPostButton.onclick = async function(){
+                                    var likeGroupPostJSON = await likeThroughAPI(canteenGroupJSON.feed.data[i].id, loginStateJSON.authResponse.accessToken);
+
+                                    if(likeGroupPostJSON && !likeGroupPostJSON.error) {
+                                        console.log('Successfully Like');
+                                    }
+                                    else {
+                                        console.log("Error:");
+                                        console.log(likeGroupPostJSON);
+                                    }
+                                };
+                                likeGroupPostButtonDiv.appendChild(likeGroupPostButton);
+
                                 // Get comment
                                 if (canteenGroupJSON.feed.data[i].comments) {
                                     for (let j in canteenGroupJSON.feed.data[i].comments.data) {
@@ -153,9 +181,72 @@
                                             var comment = document.createElement('div');
                                             comment.innerHTML = 'Comment: ' + canteenGroupJSON.feed.data[i].comments.data[j].message;
                                             post.appendChild(comment);
+
+                                            // Reply to comment
+                                            // Reply to comment message 
+                                            var replyToCommentMessageDiv = document.createElement('div');
+                                            post.appendChild(replyToCommentMessageDiv);
+
+                                            var replyToCommentMessage = document.createElement("input");
+                                            replyToCommentMessage.setAttribute("type", "text");
+                                            replyToCommentMessage.setAttribute("id", "replyToCommentMessage" + i + "and" + j);
+                                            replyToCommentMessageDiv.appendChild(replyToCommentMessage);
+
+                                            // Reply to comment button
+                                            var replyToCommentButtonDiv = document.createElement('div');
+                                            post.appendChild(replyToCommentButtonDiv);
+
+                                            var replyToCommentButton = document.createElement("button");
+                                            replyToCommentButton.innerHTML = "Reply";
+                                            replyToCommentButton.onclick = async function(){
+                                                var replyToCommentJSON = await commentThroughAPI(document.getElementById('replyToCommentMessage' + i + "and" + j).value, canteenGroupJSON.feed.data[i].comments.data[j].id, loginStateJSON.authResponse.accessToken);
+
+                                                if(replyToCommentJSON && !replyToCommentJSON.error) {
+                                                    console.log('Successfully Comment');
+                                                }
+                                                else {
+                                                    console.log("Error:");
+                                                    console.log(replyToCommentJSON);
+                                                }
+                                            };
+                                            replyToCommentButtonDiv.appendChild(replyToCommentButton);
                                         }
                                     }
                                 }
+
+                                // Comment to post
+                                // Comment to post title
+                                var commentToPostTitle = document.createElement('h4');
+                                commentToPostTitle.innerHTML = "Comment to this post";
+                                post.appendChild(commentToPostTitle);
+
+                                // Comment to post message 
+                                var commentToPostMessageDiv = document.createElement('div');
+                                post.appendChild(commentToPostMessageDiv);
+
+                                var commentToPostMessage = document.createElement("input");
+                                commentToPostMessage.setAttribute("type", "text");
+                                commentToPostMessage.setAttribute("id", "commentToPostMessage" + i);
+                                commentToPostMessageDiv.appendChild(commentToPostMessage);
+
+                                // Comment to post button
+                                var commentToPostButtonDiv = document.createElement('div');
+                                post.appendChild(commentToPostButtonDiv);
+
+                                var commentToPostButton = document.createElement("button");
+                                commentToPostButton.innerHTML = "Comment";
+                                commentToPostButton.onclick = async function(){
+                                    var commentToPostJSON = await commentThroughAPI(document.getElementById('commentToPostMessage' + i).value, canteenGroupJSON.feed.data[i].id, loginStateJSON.authResponse.accessToken);
+
+                                    if(commentToPostJSON && !commentToPostJSON.error) {
+                                        console.log('Successfully Comment');
+                                    }
+                                    else {
+                                        console.log("Error:");
+                                        console.log(commentToPostJSON);
+                                    }
+                                };
+                                commentToPostButtonDiv.appendChild(commentToPostButton);
                             }
                         }
                     }
@@ -213,6 +304,33 @@
             function getGroupFeedFromAPI(groupId, userToken) {
                 return new Promise((resolve, reject) => {
                     FB.api('/' + groupId + '?fields=name,feed{id,message,permalink_url,comments{message}}', { access_token:userToken }, function(response) {
+                        resolve(response);
+                    });
+                });
+            }
+
+            // Get group post like from API
+            function getGroupPostLikeFromAPI(groupPostId, userToken) {
+                return new Promise((resolve, reject) => {
+                    FB.api('/' + groupPostId + '?fields=id,message,likes.summary(total_count)', { access_token:userToken }, function(response) {
+                        resolve(response);
+                    });
+                });
+            }
+
+            // Like through API
+            function likeThroughAPI(objectId, userToken) {
+                return new Promise((resolve, reject) => {
+                    FB.api('/' + objectId + '/likes', 'post', { access_token:userToken }, function(response) {
+                        resolve(response);
+                    });
+                });
+            }
+
+            // Comment through API
+            function commentThroughAPI(message, objectId, userToken) {
+                return new Promise((resolve, reject) => {
+                    FB.api('/' + objectId + '/comments', 'post', { message:message, access_token:userToken }, function(response) {
                         resolve(response);
                     });
                 });
