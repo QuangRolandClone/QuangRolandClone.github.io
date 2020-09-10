@@ -113,7 +113,91 @@
                 groupFeed.appendChild(title);
 
                 var canteenGroupJSON = await getGroupFeedFromAPI(canteenGroupId, loginStateJSON.authResponse.accessToken);
-                console.log(canteenGroupJSON);
+
+                if(canteenGroupJSON && !canteenGroupJSON.error) {
+                    console.log(canteenGroupJSON.name + ' Feed:');
+                    console.log(canteenGroupJSON);
+
+                    if (canteenGroupJSON.feed) {
+                        // Name
+                        var name = document.createElement('h1');
+                        name.innerHTML = canteenGroupJSON.name;
+                        groupFeed.appendChild(name);
+
+                        // Build feed
+                        var feed = document.createElement('ul');
+                        feed.className = "list-group";
+                        groupFeed.appendChild(feed);
+
+                        for (let i in canteenGroupJSON.feed.data) {
+                            if (canteenGroupJSON.feed.data[i].message) {
+                                // Build post
+                                var post = document.createElement('li');
+                                post.className = "list-group-item";
+                                feed.appendChild(post);
+
+                                // Message
+                                var message = document.createElement('div');
+                                message.innerHTML = 'Message: ' + canteenGroupJSON.feed.data[i].message;
+                                post.appendChild(message);
+
+                                // Link
+                                var link = document.createElement('div');
+                                link.innerHTML = '<a href="' + canteenGroupJSON.feed.data[i].permalink_url + '" target="_blank">Link to the post</a>';
+                                post.appendChild(link);
+
+                                // Get comment
+                                if (canteenGroupJSON.feed.data[i].comments) {
+                                    for (let j in canteenGroupJSON.feed.data[i].comments.data) {
+                                        if (canteenGroupJSON.feed.data[i].comments.data[j].message) {
+                                            var comment = document.createElement('div');
+                                            comment.innerHTML = 'Comment: ' + canteenGroupJSON.feed.data[i].comments.data[j].message;
+                                            post.appendChild(comment);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Post to group
+                    // Post to group title
+                    var postToGroupTitle = document.createElement('h1');
+                    postToGroupTitle.innerHTML = "Post to " + canteenGroupJSON.name;
+                    groupFeed.appendChild(postToGroupTitle);
+
+                    // Post to group message
+                    var postToGroupMessageDiv = document.createElement('div');
+                    groupFeed.appendChild(postToGroupMessageDiv);
+
+                    var postToGroupMessage = document.createElement("input");
+                    postToGroupMessage.setAttribute("type", "text");
+                    postToGroupMessage.setAttribute("id", "postToGroupMessage");
+                    postToGroupMessageDiv.appendChild(postToGroupMessage);
+
+                    // Post to group button
+                    var postToGroupButtonDiv = document.createElement('div');
+                    groupFeed.appendChild(postToGroupButtonDiv);
+
+                    var postToGroupButton = document.createElement("button");
+                    postToGroupButton.innerHTML = "Post to Group";
+                    postToGroupButton.onclick = async function(){
+                        var postToGroupJSON = await postToGroupThroughAPI(document.getElementById('postToGroupMessage').value, canteenGroupId, loginStateJSON.authResponse.accessToken);
+
+                        if(postToGroupJSON && !postToGroupJSON.error) {
+                            console.log('Successfully Post');
+                        }
+                        else {
+                            console.log("Error:");
+                            console.log(postToGroupJSON);
+                        }
+                    };
+                    postToGroupButtonDiv.appendChild(postToGroupButton);
+                }
+                else {
+                    console.log("Error:");
+                    console.log(canteenGroupJSON);
+                }
             }
 
             // Get group from API
@@ -129,6 +213,15 @@
             function getGroupFeedFromAPI(groupId, userToken) {
                 return new Promise((resolve, reject) => {
                     FB.api('/' + groupId + '?fields=name,feed{id,message,permalink_url,comments{message}}', { access_token:userToken }, function(response) {
+                        resolve(response);
+                    });
+                });
+            }
+
+            // Post to group through API
+            function postToGroupThroughAPI(message, groupId, userToken) {
+                return new Promise((resolve, reject) => {
+                    FB.api('/' + groupId + '/feed', 'post', { message:message, access_token:userToken }, function(response) {
                         resolve(response);
                     });
                 });
