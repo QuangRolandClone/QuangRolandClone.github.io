@@ -10,7 +10,7 @@
         integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
         crossorigin="anonymous">
 
-        <title>Test Canteen App</title>
+        <title>Canteen App</title>
     </head>
     <body>
         <!-- Bootstrap JavaScript -->
@@ -27,7 +27,7 @@
         <script>
             window.fbAsyncInit = async function() {
                 FB.init({
-                    appId      : '692592981600482',
+                    appId      : '358441765246257',
                     cookie     : true,
                     xfbml      : true,
                     version    : 'v8.0'
@@ -60,7 +60,8 @@
                 if (response.status === 'connected') {
                     console.log('Logged in');
                     displayElements(true);
-                    showWelcome();
+                    identifyUser();
+                    displayPageFeed();
                 }
                 else {
                     console.log('Not Logged in');
@@ -73,12 +74,14 @@
                 if (isLoggedIn) {
                     document.getElementById('loginButton').setAttribute('style', 'display:none');
                     document.getElementById('logoutButton').setAttribute('style', 'display:block');
-                    document.getElementById('welcomeMessage').setAttribute('style', 'display:block');
+                    document.getElementById('getLongLivedPageTokenButton').setAttribute('style', 'display:none');
+                    document.getElementById('pageFeed').setAttribute('style', 'display:block');
                 }
                 else {
                     document.getElementById('loginButton').setAttribute('style', 'display:block');
                     document.getElementById('logoutButton').setAttribute('style', 'display:none');
-                    document.getElementById('welcomeMessage').setAttribute('style', 'display:none');
+                    document.getElementById('getLongLivedPageTokenButton').setAttribute('style', 'display:none');
+                    document.getElementById('pageFeed').setAttribute('style', 'display:none');
                 }
             }
 
@@ -93,7 +96,7 @@
                 return new Promise((resolve, reject) => {
                     FB.login(function(response) {
                         resolve(response);
-                    }, {scope: 'public_profile, email, pages_show_list, pages_manage_posts, pages_manage_metadata, pages_read_engagement, pages_manage_engagement, pages_read_user_content, groups_access_member_info, publish_to_groups'});
+                    }, {scope: 'public_profile, email, pages_show_list, pages_manage_posts, pages_manage_metadata, pages_read_engagement, pages_manage_engagement, pages_read_user_content'});
                 });
             }
 
@@ -113,9 +116,320 @@
                 });
             }
 
-            // Show welcome message
-            function showWelcome() {
-                document.getElementById('welcomeMessage').innerHTML = '<h1>Welcome</h1>';
+            // User
+            var userId;
+            var userName;
+            var isAdmin;
+
+            // Identify user
+            async function identifyUser() {
+                var userJSON = await getUserFromAPI();
+
+                if(userJSON && !userJSON.error) {
+                    userId = userJSON.id;
+                    userName = userJSON.name;
+
+                    // Check if the user is the admin of the page
+                    if (userId === "2746082475612181") {
+                        isAdmin = true;
+                    }
+                    else {
+                        isAdmin = false;
+                    }
+                }
+                else {
+                    console.log("Error:");
+                    console.log(userJSON);
+                }
+            }
+
+            // Canteen page
+            var canteenPageId = "111411690697844";
+            var canteenPageName = "Quang Canteen";
+            var canteenPageToken = "EAAFGADoXFTEBAIZCxEEbWvdLDN8BziSyMkW4IISCUZAbDq1WlcU8QqDIicZCSj16Coa8hTDWncPFIGf4g1yO2p1P2ZBZAKV3Od8ipChMvKAQrl1NEjqL8EliB3NHic94tQbizJm3J6cg1lnucZA1f8tY6IF7Dm4vPsaH5zwMBZAowZDZD";
+            var canteenPageJSON;
+
+            // Get long-lived page token
+            async function getLongLivedPageToken() {
+                var loginStateJSON = await checkLoginState();
+
+                if (loginStateJSON.status === "connected") {
+                    var longLivedUserTokenJSON = await getLongLivedUserToken(loginStateJSON.authResponse.accessToken);
+                    
+                    // Get the page that user admins
+                    var pageJSON = await getPageFromAPI(longLivedUserTokenJSON.access_token);
+
+                    if(pageJSON && !pageJSON.error) {
+                        console.log('Page Token JSON:');
+                        console.log(pageJSON);
+
+                        if (pageJSON.accounts) {
+                            canteenPageId = pageJSON.accounts.data[0].id;
+                            canteenPageToken = pageJSON.accounts.data[0].access_token;
+                        }
+                    }
+                    else {
+                        console.log("Error:");
+                        console.log(pageJSON);
+                    }
+                }
+                else {
+                    console.log("Error:");
+                    console.log(loginStateJSON);
+                }
+            }
+
+            // Display page feed
+            async function displayPageFeed() {
+                var pageFeed = document.createElement('div');
+                document.getElementById('pageFeed').appendChild(pageFeed);
+
+                // Title
+                var title = document.createElement('h1');
+                title.innerHTML = "Page Feed";
+                pageFeed.appendChild(title);
+
+                canteenPageJSON = await getPageFeedFromAPI(canteenPageId, canteenPageToken);
+
+                if(canteenPageJSON && !canteenPageJSON.error) {
+                    console.log(canteenPageJSON.name + ' Feed:');
+                    console.log(canteenPageJSON);
+
+                    if (canteenPageJSON.feed) {
+                        // Name
+                        var name = document.createElement('h1');
+                        name.innerHTML = canteenPageJSON.name;
+                        pageFeed.appendChild(name);
+
+                        // Build feed
+                        var feed = document.createElement('ul');
+                        feed.className = "list-group";
+                        pageFeed.appendChild(feed);
+
+                        for (let i in canteenPageJSON.feed.data) {
+                            if (canteenPageJSON.feed.data[i].message) {
+                                // Build post
+                                var post = document.createElement('li');
+                                post.className = "list-group-item";
+                                feed.appendChild(post);
+
+                                // Message
+                                var message = document.createElement('div');
+                                message.innerHTML = 'Post message: ' + canteenPageJSON.feed.data[i].message;
+                                post.appendChild(message);
+
+                                // Link
+                                var link = document.createElement('div');
+                                link.innerHTML = '<a href="' + canteenPageJSON.feed.data[i].permalink_url + '" target="_blank">Link to the post</a>';
+                                post.appendChild(link);
+
+                                // Get comment
+                                if (canteenPageJSON.feed.data[i].comments) {
+                                    for (let j in canteenPageJSON.feed.data[i].comments.data) {
+                                        if (canteenPageJSON.feed.data[i].comments.data[j].message && (isAdmin || canteenPageJSON.feed.data[i].comments.data[j].message.includes("; [" + userId + ";" + userName + ";]") || canteenPageJSON.feed.data[i].comments.data[j].message.includes("; [" + canteenPageId + ";" + canteenPageName + ";]"))) {
+                                            
+                                            var comment = document.createElement('div');
+                                            var tempComment = canteenPageJSON.feed.data[i].comments.data[j].message.split("; [");
+                                            var tempComment2 = tempComment[1].split(";");
+                                            comment.innerHTML = 'Comment from ' + tempComment2[1] + ": " + tempComment[0];
+                                            post.appendChild(comment);
+
+                                            // Get reply comment
+                                            var commentJSON = await getCommentFromAPI(canteenPageJSON.feed.data[i].comments.data[j].id, canteenPageToken);
+
+                                            if(commentJSON && !commentJSON.error) {
+                                                for (let k in commentJSON.data) {
+                                                    var replyComment = document.createElement('div');
+                                                    var tempReplyComment = commentJSON.data[k].message.split("; [");
+                                                    var tempReplyComment2 = tempReplyComment[1].split(";");
+                                                    replyComment.innerHTML = '- Reply from ' + tempReplyComment2[1] + ": " + tempReplyComment[0];
+                                                    post.appendChild(replyComment);
+                                                }
+                                            }
+
+                                            // Reply to comment
+                                            // Reply to comment message
+                                            var replyToCommentMessageDiv = document.createElement('div');
+                                            post.appendChild(replyToCommentMessageDiv);
+
+                                            var replyToCommentMessage = document.createElement("input");
+                                            replyToCommentMessage.setAttribute("type", "text");
+                                            replyToCommentMessage.setAttribute("id", "replyToCommentMessage" + i + "and" + j);
+                                            replyToCommentMessageDiv.appendChild(replyToCommentMessage);
+
+                                            // Reply to comment button
+                                            var replyToCommentButtonDiv = document.createElement('div');
+                                            post.appendChild(replyToCommentButtonDiv);
+
+                                            var replyToCommentButton = document.createElement("button");
+                                            replyToCommentButton.innerHTML = "Reply";
+                                            replyToCommentButton.onclick = async function(){
+                                                if (isAdmin) {
+                                                    var replyToCommentJSON = await commentThroughAPI(document.getElementById('replyToCommentMessage' + i + "and" + j).value + "; [" + canteenPageId + ";" + canteenPageName + ";]", canteenPageJSON.feed.data[i].comments.data[j].id, canteenPageToken);
+                                                }
+                                                else {
+                                                    var replyToCommentJSON = await commentThroughAPI(document.getElementById('replyToCommentMessage' + i + "and" + j).value + "; [" + userId + ";" + userName + ";]", canteenPageJSON.feed.data[i].comments.data[j].id, canteenPageToken);
+                                                }
+
+
+                                                if(replyToCommentJSON && !replyToCommentJSON.error) {
+                                                    console.log('Successfully Reply to Comment');
+                                                }
+                                                else {
+                                                    console.log("Error:");
+                                                    console.log(replyToCommentJSON);
+                                                }
+                                            };
+                                            replyToCommentButtonDiv.appendChild(replyToCommentButton);
+                                        }
+                                    }
+                                }
+
+                                // Comment to post
+                                // Comment to post title
+                                var commentToPostTitle = document.createElement('h4');
+                                commentToPostTitle.innerHTML = "Comment to this post";
+                                post.appendChild(commentToPostTitle);
+
+                                // Comment to post message
+                                var commentToPostMessageDiv = document.createElement('div');
+                                post.appendChild(commentToPostMessageDiv);
+
+                                var commentToPostMessage = document.createElement("input");
+                                commentToPostMessage.setAttribute("type", "text");
+                                commentToPostMessage.setAttribute("id", "commentToPostMessage" + i);
+                                commentToPostMessageDiv.appendChild(commentToPostMessage);
+
+                                // Comment to post button
+                                var commentToPostButtonDiv = document.createElement('div');
+                                post.appendChild(commentToPostButtonDiv);
+
+                                var commentToPostButton = document.createElement("button");
+                                commentToPostButton.innerHTML = "Comment";
+                                commentToPostButton.onclick = async function(){
+                                    if (isAdmin) {
+                                        var commentToPostJSON = await commentThroughAPI(document.getElementById('commentToPostMessage' + i).value + "; [" + canteenPageId + ";" + canteenPageName + ";]", canteenPageJSON.feed.data[i].id, canteenPageToken);
+                                    }
+                                    else {
+                                        var commentToPostJSON = await commentThroughAPI(document.getElementById('commentToPostMessage' + i).value + "; [" + userId + ";" + userName + ";]", canteenPageJSON.feed.data[i].id, canteenPageToken);
+                                    }
+
+                                    if(commentToPostJSON && !commentToPostJSON.error) {
+                                        console.log('Successfully Comment');
+                                    }
+                                    else {
+                                        console.log("Error:");
+                                        console.log(commentToPostJSON);
+                                    }
+                                };
+                                commentToPostButtonDiv.appendChild(commentToPostButton);
+                            }
+                        }
+                    }
+
+                    // Post to page
+                    if (isAdmin === true) {
+                        // Post to page title
+                        var postToPageTitle = document.createElement('h1');
+                        postToPageTitle.innerHTML = "Post to " + canteenPageJSON.name;
+                        pageFeed.appendChild(postToPageTitle);
+
+                        // Post to page message
+                        var postToPageMessageDiv = document.createElement('div');
+                        pageFeed.appendChild(postToPageMessageDiv);
+
+                        var postToPageMessage = document.createElement("input");
+                        postToPageMessage.setAttribute("type", "text");
+                        postToPageMessage.setAttribute("id", "postToPageMessage");
+                        postToPageMessageDiv.appendChild(postToPageMessage);
+
+                        // Post to page button
+                        var postToPageButtonDiv = document.createElement('div');
+                        pageFeed.appendChild(postToPageButtonDiv);
+
+                        var postToPageButton = document.createElement("button");
+                        postToPageButton.innerHTML = "Post to Page";
+                        postToPageButton.onclick = async function(){
+                            var postToPageJSON = await postToPageThroughAPI(document.getElementById('postToPageMessage').value, canteenPageId, canteenPageToken);
+
+                            if(postToPageJSON && !postToPageJSON.error) {
+                                console.log('Successfully Post');
+                            }
+                            else {
+                                console.log("Error:");
+                                console.log(postToPageJSON);
+                            }
+                        };
+                        postToPageButtonDiv.appendChild(postToPageButton);
+                    }
+                }
+                else {
+                    console.log("Error:");
+                    console.log(canteenPageJSON);
+                }
+            }
+
+            // Get user from API
+            function getUserFromAPI() {
+                return new Promise((resolve, reject) => {
+                    FB.api('/me?fields=id,name', function(response) {
+                        resolve(response);
+                    });
+                });
+            }
+
+            // Get long-lived user token
+            function getLongLivedUserToken(shortLivedUserToken) {
+                return new Promise((resolve, reject) => {
+                    FB.api('/oauth/access_token', 'get', { "grant_type":"fb_exchange_token","client_id":"358441765246257","client_secret":"5b85e65ab644a281e61556eadae7ee1d","fb_exchange_token":shortLivedUserToken }, function(response) {
+                        resolve(response);
+                    });
+                });
+            }
+
+            // Get page from API
+            function getPageFromAPI(userToken) {
+                return new Promise((resolve, reject) => {
+                    FB.api('/me?fields=accounts', { access_token:userToken }, function(response) {
+                        resolve(response);
+                    });
+                });
+            }
+
+            // Get page feed from API
+            function getPageFeedFromAPI(pageId, pageToken) {
+                return new Promise((resolve, reject) => {
+                    FB.api('/' + pageId + '?fields=name,feed{id,message,permalink_url,comments{message}}', { access_token:pageToken }, function(response) {
+                        resolve(response);
+                    });
+                });
+            }
+
+            // Get comment from API
+            function getCommentFromAPI(objectId, pageToken) {
+                return new Promise((resolve, reject) => {
+                    FB.api('/' + objectId + '/comments', { access_token:pageToken }, function(response) {
+                        resolve(response);
+                    });
+                });
+            }
+
+            // Comment through API
+            function commentThroughAPI(message, objectId, pageToken) {
+                return new Promise((resolve, reject) => {
+                    FB.api('/' + objectId + '/comments', 'post', { message:message, access_token:pageToken }, function(response) {
+                        resolve(response);
+                    });
+                });
+            }
+
+            // Post to page through API
+            function postToPageThroughAPI(message, pageId, pageToken) {
+                return new Promise((resolve, reject) => {
+                    FB.api('/' + pageId + '/feed', 'post', { message:message, access_token:pageToken }, function(response) {
+                        resolve(response);
+                    });
+                });
             }
         </script>
 
@@ -123,12 +437,6 @@
         <nav class="navbar navbar-expand-md navbar-dark bg-dark">
             <!-- Home Button -->
             <a class="navbar-brand" href="index.html">Home</a>
-
-            <!-- Page Button -->
-            <a class="navbar-brand" id="pageButton" href="page.html">Page</a>
-
-            <!-- Group Button -->
-            <a class="navbar-brand" id="groupButton" href="group.html">Group</a>
             
             <div class="collapse navbar-collapse" id="navbar">
                 <ul class="navbar-nav ml-auto"> <!-- ml-auto: stick to the right -->
@@ -149,8 +457,13 @@
         </nav>
 
         <div class="container">
-            <!-- Welcome Message -->
-            <div id="welcomeMessage"></div>
+            <!-- Get Long-lived Page Token Button -->
+            <div>
+                <button id="getLongLivedPageTokenButton" onclick="getLongLivedPageToken();" style="display:none">Get Long-lived Page Token</button>
+            </div>
+
+            <!-- Page Feed -->
+            <div id="pageFeed"></div>
         </div>
     </body>
 </html>
