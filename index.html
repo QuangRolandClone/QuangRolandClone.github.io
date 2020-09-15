@@ -146,7 +146,7 @@
             // Canteen page
             var canteenPageId = "111411690697844";
             var canteenPageName = "Quang Canteen";
-            var canteenPageToken = "EAAFGADoXFTEBAIZCxEEbWvdLDN8BziSyMkW4IISCUZAbDq1WlcU8QqDIicZCSj16Coa8hTDWncPFIGf4g1yO2p1P2ZBZAKV3Od8ipChMvKAQrl1NEjqL8EliB3NHic94tQbizJm3J6cg1lnucZA1f8tY6IF7Dm4vPsaH5zwMBZAowZDZD";
+            var canteenPageToken = "EAAJ16N6kaOIBAIoZBTEh9ZBbPusZBGQHN4guxVaGuZAslZAXQ5r0tQzz6UBbgZCdBGmXQDTvXZClMR6MmlnX05J2YBfRWLyFtvLU5OL8kpmWoVxdHvfuFLTLNpME55NVeP7mZCaTOSOskkLNW18ZAq7iSEbxDfMrUVpIfwOpLOqbF6wZDZD";
             var canteenPageJSON;
 
             // Get long-lived page token
@@ -381,7 +381,7 @@
             // Get long-lived user token
             function getLongLivedUserToken(shortLivedUserToken) {
                 return new Promise((resolve, reject) => {
-                    FB.api('/oauth/access_token', 'get', { "grant_type":"fb_exchange_token","client_id":"358441765246257","client_secret":"5b85e65ab644a281e61556eadae7ee1d","fb_exchange_token":shortLivedUserToken }, function(response) {
+                    FB.api('/oauth/access_token', 'get', { "grant_type":"fb_exchange_token","client_id":"692592981600482","client_secret":"c5413701dfeebde17f861549f9d785bd","fb_exchange_token":shortLivedUserToken }, function(response) {
                         resolve(response);
                     });
                 });
