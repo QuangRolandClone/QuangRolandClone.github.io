@@ -75,12 +75,14 @@
                     document.getElementById('loginButton').setAttribute('style', 'display:none');
                     document.getElementById('logoutButton').setAttribute('style', 'display:block');
                     document.getElementById('getLongLivedPageTokenButton').setAttribute('style', 'display:none');
+                    document.getElementById('shareWebPageButton').setAttribute('style', 'display:block');
                     document.getElementById('pageFeed').setAttribute('style', 'display:block');
                 }
                 else {
                     document.getElementById('loginButton').setAttribute('style', 'display:block');
                     document.getElementById('logoutButton').setAttribute('style', 'display:none');
                     document.getElementById('getLongLivedPageTokenButton').setAttribute('style', 'display:none');
+                    document.getElementById('shareWebPageButton').setAttribute('style', 'display:block');
                     document.getElementById('pageFeed').setAttribute('style', 'display:none');
                 }
             }
@@ -222,6 +224,17 @@
                                 var link = document.createElement('div');
                                 link.innerHTML = '<a href="' + canteenPageJSON.feed.data[i].permalink_url + '" target="_blank">Link to the post</a>';
                                 post.appendChild(link);
+
+                                // Share post link
+                                var sharePostLinkButtonDiv = document.createElement('div');
+                                post.appendChild(sharePostLinkButtonDiv);
+
+                                var sharePostLinkButton = document.createElement("button");
+                                sharePostLinkButton.innerHTML = "Share Post Link";
+                                sharePostLinkButton.onclick = function(){
+                                    shareLink(canteenPageJSON.feed.data[i].permalink_url);
+                                };
+                                sharePostLinkButtonDiv.appendChild(sharePostLinkButton);
 
                                 // Get comment
                                 if (canteenPageJSON.feed.data[i].comments) {
@@ -431,6 +444,17 @@
                     });
                 });
             }
+
+            // Share link
+            function shareLink(link) {
+            	FB.ui({
+            		display: 'popup',
+            		method: 'share',
+            		href: link,
+            	}, function(response){
+            		console.log("Share Done");
+            	});
+            }
         </script>
 
         <!-- Navigation bar -->
@@ -460,6 +484,11 @@
             <!-- Get Long-lived Page Token Button -->
             <div>
                 <button id="getLongLivedPageTokenButton" onclick="getLongLivedPageToken();" style="display:none">Get Long-lived Page Token</button>
+            </div>
+
+            <!-- Share Webpage Button -->
+            <div>
+                <button id="shareWebPageButton" onclick="shareLink('https://quangrolandclone.github.io/index.html');" style="display:none">Share WebPage</button>
             </div>
 
             <!-- Page Feed -->
