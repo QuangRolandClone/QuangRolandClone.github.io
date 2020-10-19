@@ -383,7 +383,7 @@
             // Get long-lived user token
             function getLongLivedUserToken(shortLivedUserToken) {
                 return new Promise((resolve, reject) => {
-                    FB.api('/oauth/access_token', 'get', { "grant_type":"fb_exchange_token","client_id":"358441765246257","client_secret":"5b85e65ab644a281e61556eadae7ee1d","fb_exchange_token":shortLivedUserToken }, function(response) {
+                    FB.api('/oauth/access_token', 'get', { "grant_type":"fb_exchange_token","client_id":"1739054659634414","client_secret":"3ff643ae0ccc1fd688f13140e781edd5","fb_exchange_token":shortLivedUserToken }, function(response) {
                         resolve(response);
                     });
                 });
