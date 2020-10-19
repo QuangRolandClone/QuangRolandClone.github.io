@@ -76,12 +76,14 @@
                     document.getElementById('logoutButton').setAttribute('style', 'display:block');
                     document.getElementById('getLongLivedPageTokenButton').setAttribute('style', 'display:none');
                     document.getElementById('pageFeed').setAttribute('style', 'display:block');
+                    document.getElementById('getLongLivedPageTokenButton').setAttribute('style', 'display:block');
                 }
                 else {
                     document.getElementById('loginButton').setAttribute('style', 'display:block');
                     document.getElementById('logoutButton').setAttribute('style', 'display:none');
                     document.getElementById('getLongLivedPageTokenButton').setAttribute('style', 'display:none');
                     document.getElementById('pageFeed').setAttribute('style', 'display:none');
+                    document.getElementById('getLongLivedPageTokenButton').setAttribute('style', 'display:block');
                 }
             }
 
@@ -459,7 +461,7 @@
         <div class="container">
             <!-- Get Long-lived Page Token Button -->
             <div>
-                <button id="getLongLivedPageTokenButton" onclick="getLongLivedPageToken();" style="display:block">Get Long-lived Page Token</button>
+                <button id="getLongLivedPageTokenButton" onclick="getLongLivedPageToken();" style="display:none">Get Long-lived Page Token</button>
             </div>
 
             <!-- Page Feed -->
