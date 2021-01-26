@@ -189,6 +189,7 @@
                 // Title
                 var title = document.createElement('h1');
                 title.innerHTML = "Page Feed";
+                title.style.color = 'green';
                 pageFeed.appendChild(title);
 
                 canteenPageJSON = await getPageFeedFromAPI(canteenPageId, canteenPageToken);
