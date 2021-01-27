@@ -30,14 +30,15 @@
                 color: black;
             }
 
-
-
             .post {
-                background-color: lightgrey;
-                max-width: 100%;
+                max-width: 50%;
                 border: 1px solid black;
                 padding: 20px;
-                margin: 10px;
+                margin: 500px;
+            }
+
+            .message {
+                font-size: 30px;
             }
         </style>
     </head>
@@ -212,7 +213,7 @@
 
                     if (canteenPageJSON.feed) {
                         // Name
-                        var name = document.createElement('div');
+                        var name = document.createElement('h2');
                         name.innerHTML = canteenPageJSON.name;
                         pageFeed.appendChild(name);
 
