@@ -101,14 +101,14 @@
             function displayElements(isLoggedIn) {
                 if (isLoggedIn) {
                     document.getElementById('loginButton').innerHTML = "Logout";
-                    document.getElementById('loginButton').onclick = "logout();";
+                    document.getElementById('loginButton').onclick = function() {logout()};
                     document.getElementById('getLongLivedPageTokenButton').setAttribute('style', 'display:none');
                     document.getElementById('shareWebPageButton').setAttribute('style', 'display:block');
                     document.getElementById('pageFeed').setAttribute('style', 'display:block');
                 }
                 else {
                     document.getElementById('loginButton').innerHTML = "Login";
-                    document.getElementById('loginButton').onclick = "login();";
+                    document.getElementById('loginButton').onclick = function() {login()};
                     document.getElementById('getLongLivedPageTokenButton').setAttribute('style', 'display:none');
                     document.getElementById('shareWebPageButton').setAttribute('style', 'display:block');
                     document.getElementById('pageFeed').setAttribute('style', 'display:none');
