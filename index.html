@@ -3,18 +3,26 @@
     <head>
         <meta charset="UTF-8">
 
-        <!-- Bootstrap CSS -->
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
-        crossorigin="anonymous">
-
         <title>Canteen App</title>
 
         <style>
-            h1 {
-              color: blue;
+            .navbar {
+                overflow: hidden;
+                background-color: #333;
+            }
+
+            .navbar a {
+                float: left;
+                display: block;
+                color: #f2f2f2;
+                text-align: center;
+                padding: 14px 16px;
+                text-decoration: none;
+            }
+
+            .navbar a:hover {
+                background-color: #ddd;
+                color: black;
             }
         </style>
     </head>
@@ -464,27 +472,12 @@
         </script>
 
         <!-- Navigation bar -->
-        <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="navbar">
             <!-- Home Button -->
-            <a class="navbar-brand" href="index.html">Home</a>
-            
-            <div class="collapse navbar-collapse" id="navbar">
-                <ul class="navbar-nav ml-auto"> <!-- ml-auto: stick to the right -->
-                    <!-- Facebook Default Login Button -->
-                    <!-- <div class="fb-login-button"
-                        id="loginButton"
-                        scope="public_profile, email, pages_show_list, pages_manage_posts, pages_manage_metadata, pages_read_engagement, pages_manage_engagement, pages_read_user_content"
-                        onlogin="checkLoginState()">
-                    </div> -->
-
-                    <!-- Login Button -->
-                    <button id="loginButton" onclick="login();" style="display:none">Login</button>
-                    
-                    <!-- Logout Button -->
-                    <button id="logoutButton" onclick="logout();" style="display:none">Logout</button>
-                </ul>
-            </div>
-        </nav>
+            <a href="index.html">Home</a>
+            <a id="loginButton" onclick="login();" style="float: right; display: none;">Login</a>
+            <a id="logoutButton" onclick="logout();" style="float: right; display: none;">Logout</a>
+        </div>
 
         <div class="container">
             <!-- Get Long-lived Page Token Button -->
