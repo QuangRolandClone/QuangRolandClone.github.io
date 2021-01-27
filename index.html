@@ -39,8 +39,17 @@
 
             .message {
                 font-size: 30px;
-                border-bottom: 5px solid black;
-                padding: 20px;
+                border-bottom: 1px solid black;
+                padding-bottom: 20px;
+            }
+
+            .link a {
+                display: block;
+                color: #f2f2f2;
+                text-align: center;
+                font-size: 20px;
+                padding: 15px;
+                text-decoration: none;
             }
         </style>
     </head>
@@ -167,10 +176,10 @@
             }
 
             // Canteen page
-            var canteenPageId = "111411690697844";
-            var canteenPageName = "Quang Shop";
-            var canteenPageToken = "EAAFGADoXFTEBAIZCxEEbWvdLDN8BziSyMkW4IISCUZAbDq1WlcU8QqDIicZCSj16Coa8hTDWncPFIGf4g1yO2p1P2ZBZAKV3Od8ipChMvKAQrl1NEjqL8EliB3NHic94tQbizJm3J6cg1lnucZA1f8tY6IF7Dm4vPsaH5zwMBZAowZDZD";
-            var canteenPageJSON;
+            var shopPageId = "111411690697844";
+            var shopPageName = "Quang Shop";
+            var shopPageToken = "EAAFGADoXFTEBAIZCxEEbWvdLDN8BziSyMkW4IISCUZAbDq1WlcU8QqDIicZCSj16Coa8hTDWncPFIGf4g1yO2p1P2ZBZAKV3Od8ipChMvKAQrl1NEjqL8EliB3NHic94tQbizJm3J6cg1lnucZA1f8tY6IF7Dm4vPsaH5zwMBZAowZDZD";
+            var shopPageJSON;
 
             // Get long-lived page token
             async function getLongLivedPageToken() {
@@ -187,8 +196,8 @@
                         console.log(pageJSON);
 
                         if (pageJSON.accounts) {
-                            canteenPageId = pageJSON.accounts.data[0].id;
-                            canteenPageToken = pageJSON.accounts.data[0].access_token;
+                            shopPageId = pageJSON.accounts.data[0].id;
+                            shopPageToken = pageJSON.accounts.data[0].access_token;
                         }
                     }
                     else {
@@ -207,24 +216,24 @@
                 var pageFeed = document.createElement('div');
                 document.getElementById('pageFeed').appendChild(pageFeed);
 
-                canteenPageJSON = await getPageFeedFromAPI(canteenPageId, canteenPageToken);
+                shopPageJSON = await getPageFeedFromAPI(shopPageId, shopPageToken);
 
-                if(canteenPageJSON && !canteenPageJSON.error) {
-                    console.log(canteenPageJSON.name + ' Feed:');
-                    console.log(canteenPageJSON);
+                if(shopPageJSON && !shopPageJSON.error) {
+                    console.log(shopPageJSON.name + ' Feed:');
+                    console.log(shopPageJSON);
 
-                    if (canteenPageJSON.feed) {
+                    if (shopPageJSON.feed) {
                         // Name
                         var name = document.createElement('h1');
-                        name.innerHTML = canteenPageJSON.name;
+                        name.innerHTML = shopPageJSON.name;
                         pageFeed.appendChild(name);
 
                         // Build feed
                         var feed = document.createElement('div');
                         pageFeed.appendChild(feed);
 
-                        for (let i in canteenPageJSON.feed.data) {
-                            if (canteenPageJSON.feed.data[i].message) {
+                        for (let i in shopPageJSON.feed.data) {
+                            if (shopPageJSON.feed.data[i].message) {
                                 // Build post
                                 var post = document.createElement('div');
                                 post.classList.add("post");
@@ -233,39 +242,29 @@
                                 // Message
                                 var message = document.createElement('div');
                                 message.classList.add("message");
-                                message.innerHTML = 'Post message: ' + canteenPageJSON.feed.data[i].message;
+                                message.innerHTML = 'Post message: ' + shopPageJSON.feed.data[i].message;
                                 post.appendChild(message);
 
                                 // Link
                                 var link = document.createElement('div');
-                                link.innerHTML = '<a href="' + canteenPageJSON.feed.data[i].permalink_url + '" target="_blank">Link to the post</a>';
+                                link.classList.add("link");
+                                link.innerHTML = '<a href="' + shopPageJSON.feed.data[i].permalink_url + '" target="_blank">Link to the post</a>';
                                 post.appendChild(link);
 
-                                // Share post link
-                                var sharePostLinkButtonDiv = document.createElement('div');
-                                post.appendChild(sharePostLinkButtonDiv);
-
-                                var sharePostLinkButton = document.createElement("button");
-                                sharePostLinkButton.innerHTML = "Share Post Link";
-                                sharePostLinkButton.onclick = function(){
-                                    shareLink(canteenPageJSON.feed.data[i].permalink_url);
-                                };
-                                sharePostLinkButtonDiv.appendChild(sharePostLinkButton);
-
                                 // Get comment
-                                if (canteenPageJSON.feed.data[i].comments) {
-                                    for (let j in canteenPageJSON.feed.data[i].comments.data) {
-                                        if (canteenPageJSON.feed.data[i].comments.data[j].message && (isAdmin || canteenPageJSON.feed.data[i].comments.data[j].message.includes("; [" + userId + ";" + userName + ";]") || canteenPageJSON.feed.data[i].comments.data[j].message.includes("; [" + canteenPageId + ";" + canteenPageName + ";]"))) {
+                                if (shopPageJSON.feed.data[i].comments) {
+                                    for (let j in shopPageJSON.feed.data[i].comments.data) {
+                                        if (shopPageJSON.feed.data[i].comments.data[j].message && (isAdmin || shopPageJSON.feed.data[i].comments.data[j].message.includes("; [" + userId + ";" + userName + ";]") || shopPageJSON.feed.data[i].comments.data[j].message.includes("; [" + shopPageId + ";" + shopPageName + ";]"))) {
                                             
                                             var comment = document.createElement('div');
                                             comment.classList.add("comment");
-                                            var tempComment = canteenPageJSON.feed.data[i].comments.data[j].message.split("; [");
+                                            var tempComment = shopPageJSON.feed.data[i].comments.data[j].message.split("; [");
                                             var tempComment2 = tempComment[1].split(";");
                                             comment.innerHTML = 'Comment from ' + tempComment2[1] + ": " + tempComment[0];
                                             post.appendChild(comment);
 
                                             // Get reply comment
-                                            var commentJSON = await getCommentFromAPI(canteenPageJSON.feed.data[i].comments.data[j].id, canteenPageToken);
+                                            var commentJSON = await getCommentFromAPI(shopPageJSON.feed.data[i].comments.data[j].id, shopPageToken);
 
                                             if(commentJSON && !commentJSON.error) {
                                                 for (let k in commentJSON.data) {
@@ -296,10 +295,10 @@
                                             replyToCommentButton.innerHTML = "Reply";
                                             replyToCommentButton.onclick = async function(){
                                                 if (isAdmin) {
-                                                    var replyToCommentJSON = await commentThroughAPI(document.getElementById('replyToCommentMessage' + i + "and" + j).value + "; [" + canteenPageId + ";" + canteenPageName + ";]", canteenPageJSON.feed.data[i].comments.data[j].id, canteenPageToken);
+                                                    var replyToCommentJSON = await commentThroughAPI(document.getElementById('replyToCommentMessage' + i + "and" + j).value + "; [" + shopPageId + ";" + shopPageName + ";]", shopPageJSON.feed.data[i].comments.data[j].id, shopPageToken);
                                                 }
                                                 else {
-                                                    var replyToCommentJSON = await commentThroughAPI(document.getElementById('replyToCommentMessage' + i + "and" + j).value + "; [" + userId + ";" + userName + ";]", canteenPageJSON.feed.data[i].comments.data[j].id, canteenPageToken);
+                                                    var replyToCommentJSON = await commentThroughAPI(document.getElementById('replyToCommentMessage' + i + "and" + j).value + "; [" + userId + ";" + userName + ";]", shopPageJSON.feed.data[i].comments.data[j].id, shopPageToken);
                                                 }
 
 
@@ -339,10 +338,10 @@
                                 commentToPostButton.innerHTML = "Comment";
                                 commentToPostButton.onclick = async function(){
                                     if (isAdmin) {
-                                        var commentToPostJSON = await commentThroughAPI(document.getElementById('commentToPostMessage' + i).value + "; [" + canteenPageId + ";" + canteenPageName + ";]", canteenPageJSON.feed.data[i].id, canteenPageToken);
+                                        var commentToPostJSON = await commentThroughAPI(document.getElementById('commentToPostMessage' + i).value + "; [" + shopPageId + ";" + shopPageName + ";]", shopPageJSON.feed.data[i].id, shopPageToken);
                                     }
                                     else {
-                                        var commentToPostJSON = await commentThroughAPI(document.getElementById('commentToPostMessage' + i).value + "; [" + userId + ";" + userName + ";]", canteenPageJSON.feed.data[i].id, canteenPageToken);
+                                        var commentToPostJSON = await commentThroughAPI(document.getElementById('commentToPostMessage' + i).value + "; [" + userId + ";" + userName + ";]", shopPageJSON.feed.data[i].id, shopPageToken);
                                     }
 
                                     if(commentToPostJSON && !commentToPostJSON.error) {
@@ -362,7 +361,7 @@
                     if (isAdmin === true) {
                         // Post to page title
                         var postToPageTitle = document.createElement('h2');
-                        postToPageTitle.innerHTML = "Post to " + canteenPageJSON.name;
+                        postToPageTitle.innerHTML = "Post to " + shopPageJSON.name;
                         pageFeed.appendChild(postToPageTitle);
 
                         // Post to page message
@@ -381,7 +380,7 @@
                         var postToPageButton = document.createElement("button");
                         postToPageButton.innerHTML = "Post to Page";
                         postToPageButton.onclick = async function(){
-                            var postToPageJSON = await postToPageThroughAPI(document.getElementById('postToPageMessage').value, canteenPageId, canteenPageToken);
+                            var postToPageJSON = await postToPageThroughAPI(document.getElementById('postToPageMessage').value, shopPageId, shopPageToken);
 
                             if(postToPageJSON && !postToPageJSON.error) {
                                 console.log('Successfully Post');
@@ -396,7 +395,7 @@
                 }
                 else {
                     console.log("Error:");
-                    console.log(canteenPageJSON);
+                    console.log(shopPageJSON);
                 }
             }
 
