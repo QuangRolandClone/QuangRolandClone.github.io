@@ -31,7 +31,7 @@
             }
 
             .post {
-                max-width: 50%;
+                max-width: 700px;
                 padding: 20px;
                 border: 1px solid black;
                 margin: 50px;
@@ -65,7 +65,12 @@
                 width: fit-content;
                 padding: 5px 20px;
                 border-radius: 10px;
-                margin: 10px 0 10px 50px;
+                margin: 10px 0 10px 30px;
+                font-size: 20px;
+            }
+
+            .replyMessage {
+                margin: 10px 0 10px 30px;
                 font-size: 20px;
             }
         </style>
@@ -295,6 +300,7 @@
                                             post.appendChild(replyToCommentMessageDiv);
 
                                             var replyToCommentMessage = document.createElement("input");
+                                            replyToCommentMessage.classList.add("replyMessage");
                                             replyToCommentMessage.setAttribute("type", "text");
                                             replyToCommentMessage.setAttribute("id", "replyToCommentMessage" + i + "and" + j);
                                             replyToCommentMessageDiv.appendChild(replyToCommentMessage);
