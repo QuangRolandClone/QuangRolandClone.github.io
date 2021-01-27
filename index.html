@@ -74,8 +74,21 @@
                 font-size: 20px;
             }
 
-            .button {
-                float: left;
+            .replyButton {
+                background-color: darkgreen;
+                color: white;
+                padding: 5px 20px;
+                margin: 10px 0;
+                font-size: 15px;
+                text-decoration: none;
+            }
+
+            .commentMessage {
+                margin: 10px 0 10px 30px;
+                font-size: 20px;
+            }
+
+            .commentButton {
                 background-color: darkgreen;
                 color: white;
                 padding: 5px 20px;
@@ -320,7 +333,7 @@
                                             post.appendChild(replyToCommentButtonDiv);
 
                                             var replyToCommentButton = document.createElement("button");
-                                            replyToCommentButton.classList.add("button");
+                                            replyToCommentButton.classList.add("replyButton");
                                             replyToCommentButton.innerHTML = "Reply";
                                             replyToCommentButton.onclick = async function(){
                                                 if (isAdmin) {
@@ -346,7 +359,7 @@
 
                                 // Comment to post
                                 // Comment to post title
-                                var commentToPostTitle = document.createElement('div');
+                                var commentToPostTitle = document.createElement('h2');
                                 commentToPostTitle.innerHTML = "Comment to this post";
                                 post.appendChild(commentToPostTitle);
 
@@ -355,6 +368,7 @@
                                 post.appendChild(commentToPostMessageDiv);
 
                                 var commentToPostMessage = document.createElement("input");
+                                commentToPostMessage.classList.add("commentMessage");
                                 commentToPostMessage.setAttribute("type", "text");
                                 commentToPostMessage.setAttribute("id", "commentToPostMessage" + i);
                                 commentToPostMessageDiv.appendChild(commentToPostMessage);
@@ -364,6 +378,7 @@
                                 post.appendChild(commentToPostButtonDiv);
 
                                 var commentToPostButton = document.createElement("button");
+                                commentToPostButton.classList.add("commentButton");
                                 commentToPostButton.innerHTML = "Comment";
                                 commentToPostButton.onclick = async function(){
                                     if (isAdmin) {
