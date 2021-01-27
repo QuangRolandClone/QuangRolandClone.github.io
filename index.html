@@ -50,6 +50,15 @@
                 font-size: 15px;
                 text-decoration: none;
             }
+
+            .comment {
+                font-size: 20px;
+            }
+
+            .reply {
+                padding-left: 20px;
+                font-size: 20px;
+            }
         </style>
     </head>
     <body>
@@ -254,7 +263,7 @@
                                             comment.classList.add("comment");
                                             var tempComment = shopPageJSON.feed.data[i].comments.data[j].message.split("; [");
                                             var tempComment2 = tempComment[1].split(";");
-                                            comment.innerHTML = 'Comment from ' + tempComment2[1] + ": " + tempComment[0];
+                                            comment.innerHTML = tempComment2[1] + ": " + tempComment[0];
                                             post.appendChild(comment);
 
                                             // Get reply comment
@@ -263,10 +272,10 @@
                                             if(commentJSON && !commentJSON.error) {
                                                 for (let k in commentJSON.data) {
                                                     var replyComment = document.createElement('div');
-                                                    replyComment.classList.add("replyComment");
+                                                    replyComment.classList.add("reply");
                                                     var tempReplyComment = commentJSON.data[k].message.split("; [");
                                                     var tempReplyComment2 = tempReplyComment[1].split(";");
-                                                    replyComment.innerHTML = '- Reply from ' + tempReplyComment2[1] + ": " + tempReplyComment[0];
+                                                    replyComment.innerHTML = tempReplyComment2[1] + ": " + tempReplyComment[0];
                                                     post.appendChild(replyComment);
                                                 }
                                             }
