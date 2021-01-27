@@ -20,7 +20,21 @@
                 text-decoration: none;
             }
 
+            .navbar p {
+                float: right;
+                display: block;
+                color: #f2f2f2;
+                text-align: center;
+                padding: 14px 16px;
+                text-decoration: none;
+            }
+
             .navbar a:hover {
+                background-color: #ddd;
+                color: black;
+            }
+
+            .navbar p:hover {
                 background-color: #ddd;
                 color: black;
             }
@@ -86,15 +100,15 @@
             // Display the page elements based on the login state
             function displayElements(isLoggedIn) {
                 if (isLoggedIn) {
-                    document.getElementById('loginButton').setAttribute('style', 'float: right; display: none;');
-                    document.getElementById('logoutButton').setAttribute('style', 'float: right; display: block;');
+                    document.getElementById('loginButton').setAttribute('style', 'display:none');
+                    document.getElementById('logoutButton').setAttribute('style', 'display:block');
                     document.getElementById('getLongLivedPageTokenButton').setAttribute('style', 'display:none');
                     document.getElementById('shareWebPageButton').setAttribute('style', 'display:block');
                     document.getElementById('pageFeed').setAttribute('style', 'display:block');
                 }
                 else {
-                    document.getElementById('loginButton').setAttribute('style', 'float: right; display: block;');
-                    document.getElementById('logoutButton').setAttribute('style', 'float: right; display: none;');
+                    document.getElementById('loginButton').setAttribute('style', 'display:block');
+                    document.getElementById('logoutButton').setAttribute('style', 'display:none');
                     document.getElementById('getLongLivedPageTokenButton').setAttribute('style', 'display:none');
                     document.getElementById('shareWebPageButton').setAttribute('style', 'display:block');
                     document.getElementById('pageFeed').setAttribute('style', 'display:none');
