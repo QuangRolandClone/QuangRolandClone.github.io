@@ -73,6 +73,16 @@
                 margin: 10px 0 10px 30px;
                 font-size: 20px;
             }
+
+            .button {
+                display: inline-block;
+                background-color: darkgreen;
+                color: white;
+                padding: 5px 20px;
+                margin: 10px 0;
+                font-size: 15px;
+                text-decoration: none;
+            }
         </style>
     </head>
     <body>
@@ -310,6 +320,7 @@
                                             post.appendChild(replyToCommentButtonDiv);
 
                                             var replyToCommentButton = document.createElement("button");
+                                            replyToCommentButton.classList.add("button");
                                             replyToCommentButton.innerHTML = "Reply";
                                             replyToCommentButton.onclick = async function(){
                                                 if (isAdmin) {
