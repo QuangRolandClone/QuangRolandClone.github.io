@@ -30,6 +30,25 @@
                 color: black;
             }
 
+            .postToPageTitle {
+                margin: 10px 0 10px 50px;
+                font-size: 30px;
+            }
+
+            .postToPageMessage {
+                margin: 10px 0 10px 50px;
+                font-size: 20px;
+            }
+
+            .postToPageButton {
+                background-color: darkgreen;
+                color: white;
+                padding: 5px 20px;
+                margin: 10px 0 10px 50px;
+                font-size: 15px;
+                text-decoration: none;
+            }
+
             .post {
                 max-width: 700px;
                 padding: 20px;
@@ -83,21 +102,30 @@
                 text-decoration: none;
             }
 
-            .commentTitle, .postToPageTitle {
+            .commentTitle {
                 margin: 10px 0;
                 font-size: 30px;
             }
 
-            .commentMessage, .postToPageMessage {
+            .commentMessage {
                 margin: 10px 0;
                 font-size: 20px;
             }
 
-            .commentButton, .postToPageButton {
+            .commentButton {
                 background-color: darkgreen;
                 color: white;
                 padding: 5px 20px;
                 margin: 10px 0;
+                font-size: 15px;
+                text-decoration: none;
+            }
+
+            #shareWebPageButton {
+                background-color: darkgreen;
+                color: white;
+                padding: 5px 20px;
+                margin: 10px 0 10px 50px;
                 font-size: 15px;
                 text-decoration: none;
             }
@@ -272,6 +300,45 @@
                     console.log(shopPageJSON.name + ' Feed:');
                     console.log(shopPageJSON);
 
+                    // Post to page
+                    if (isAdmin === true) {
+                        // Post to page title
+                        var postToPageTitle = document.createElement('div');
+                        postToPageTitle.classList.add("postToPageTitle");
+                        postToPageTitle.innerHTML = "Post to " + shopPageJSON.name;
+                        pageFeed.appendChild(postToPageTitle);
+
+                        // Post to page message
+                        var postToPageMessageDiv = document.createElement('div');
+                        pageFeed.appendChild(postToPageMessageDiv);
+
+                        var postToPageMessage = document.createElement("input");
+                        postToPageMessage.classList.add("postToPageMessage");
+                        postToPageMessage.setAttribute("type", "text");
+                        postToPageMessage.setAttribute("id", "postToPageMessage");
+                        postToPageMessageDiv.appendChild(postToPageMessage);
+
+                        // Post to page button
+                        var postToPageButtonDiv = document.createElement('div');
+                        pageFeed.appendChild(postToPageButtonDiv);
+
+                        var postToPageButton = document.createElement("button");
+                        postToPageButton.classList.add("postToPageButton");
+                        postToPageButton.innerHTML = "Post to Page";
+                        postToPageButton.onclick = async function(){
+                            var postToPageJSON = await postToPageThroughAPI(document.getElementById('postToPageMessage').value, shopPageId, shopPageToken);
+
+                            if(postToPageJSON && !postToPageJSON.error) {
+                                console.log('Successfully Post');
+                            }
+                            else {
+                                console.log("Error:");
+                                console.log(postToPageJSON);
+                            }
+                        };
+                        postToPageButtonDiv.appendChild(postToPageButton);
+                    }
+
                     if (shopPageJSON.feed) {
                         // Build feed
                         var feed = document.createElement('div');
@@ -405,45 +472,6 @@
                                 commentToPostButtonDiv.appendChild(commentToPostButton);
                             }
                         }
-                    }
-
-                    // Post to page
-                    if (isAdmin === true) {
-                        // Post to page title
-                        var postToPageTitle = document.createElement('div');
-                        postToPageTitle.classList.add("postToPageTitle");
-                        postToPageTitle.innerHTML = "Post to " + shopPageJSON.name;
-                        pageFeed.appendChild(postToPageTitle);
-
-                        // Post to page message
-                        var postToPageMessageDiv = document.createElement('div');
-                        pageFeed.appendChild(postToPageMessageDiv);
-
-                        var postToPageMessage = document.createElement("input");
-                        postToPageMessage.classList.add("postToPageMessage");
-                        postToPageMessage.setAttribute("type", "text");
-                        postToPageMessage.setAttribute("id", "postToPageMessage");
-                        postToPageMessageDiv.appendChild(postToPageMessage);
-
-                        // Post to page button
-                        var postToPageButtonDiv = document.createElement('div');
-                        pageFeed.appendChild(postToPageButtonDiv);
-
-                        var postToPageButton = document.createElement("button");
-                        postToPageButton.classList.add("postToPageButton");
-                        postToPageButton.innerHTML = "Post to Page";
-                        postToPageButton.onclick = async function(){
-                            var postToPageJSON = await postToPageThroughAPI(document.getElementById('postToPageMessage').value, shopPageId, shopPageToken);
-
-                            if(postToPageJSON && !postToPageJSON.error) {
-                                console.log('Successfully Post');
-                            }
-                            else {
-                                console.log("Error:");
-                                console.log(postToPageJSON);
-                            }
-                        };
-                        postToPageButtonDiv.appendChild(postToPageButton);
                     }
                 }
                 else {
