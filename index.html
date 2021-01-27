@@ -29,6 +29,16 @@
                 background-color: #ddd;
                 color: black;
             }
+
+
+
+            .post {
+                background-color: lightgrey;
+                max-width: 100%;
+                border: 1px solid black;
+                padding: 20px;
+                margin: 10px;
+            }
         </style>
     </head>
     <body>
@@ -82,16 +92,16 @@
                 if (isLoggedIn) {
                     document.getElementById('loginButton').innerHTML = "Logout";
                     document.getElementById('loginButton').onclick = function() {logout()};
-                    document.getElementById('getLongLivedPageTokenButton').setAttribute('style', 'display:none');
-                    document.getElementById('shareWebPageButton').setAttribute('style', 'display:block');
-                    document.getElementById('pageFeed').setAttribute('style', 'display:block');
+                    document.getElementById('getLongLivedPageTokenButton').style.display = "none";
+                    document.getElementById('pageFeed').style.display = "block";
+                    document.getElementById('shareWebPageButton').style.display = "block";
                 }
                 else {
                     document.getElementById('loginButton').innerHTML = "Login";
                     document.getElementById('loginButton').onclick = function() {login()};
-                    document.getElementById('getLongLivedPageTokenButton').setAttribute('style', 'display:none');
-                    document.getElementById('shareWebPageButton').setAttribute('style', 'display:block');
-                    document.getElementById('pageFeed').setAttribute('style', 'display:none');
+                    document.getElementById('getLongLivedPageTokenButton').style.display = "none";
+                    document.getElementById('pageFeed').style.display = "none";
+                    document.getElementById('shareWebPageButton').style.display = "block";
                 }
             }
 
@@ -155,7 +165,7 @@
 
             // Canteen page
             var canteenPageId = "111411690697844";
-            var canteenPageName = "Quang Canteen";
+            var canteenPageName = "Quang Shop";
             var canteenPageToken = "EAAFGADoXFTEBAIZCxEEbWvdLDN8BziSyMkW4IISCUZAbDq1WlcU8QqDIicZCSj16Coa8hTDWncPFIGf4g1yO2p1P2ZBZAKV3Od8ipChMvKAQrl1NEjqL8EliB3NHic94tQbizJm3J6cg1lnucZA1f8tY6IF7Dm4vPsaH5zwMBZAowZDZD";
             var canteenPageJSON;
 
@@ -194,11 +204,6 @@
                 var pageFeed = document.createElement('div');
                 document.getElementById('pageFeed').appendChild(pageFeed);
 
-                // Title
-                var title = document.createElement('h1');
-                title.innerHTML = "Page Feed";
-                pageFeed.appendChild(title);
-
                 canteenPageJSON = await getPageFeedFromAPI(canteenPageId, canteenPageToken);
 
                 if(canteenPageJSON && !canteenPageJSON.error) {
@@ -207,24 +212,24 @@
 
                     if (canteenPageJSON.feed) {
                         // Name
-                        var name = document.createElement('h1');
+                        var name = document.createElement('div');
                         name.innerHTML = canteenPageJSON.name;
                         pageFeed.appendChild(name);
 
                         // Build feed
-                        var feed = document.createElement('ul');
-                        feed.className = "list-group";
+                        var feed = document.createElement('div');
                         pageFeed.appendChild(feed);
 
                         for (let i in canteenPageJSON.feed.data) {
                             if (canteenPageJSON.feed.data[i].message) {
                                 // Build post
-                                var post = document.createElement('li');
-                                post.className = "list-group-item";
+                                var post = document.createElement('div');
+                                post.classList.add("post");
                                 feed.appendChild(post);
 
                                 // Message
                                 var message = document.createElement('div');
+                                message.classList.add("message");
                                 message.innerHTML = 'Post message: ' + canteenPageJSON.feed.data[i].message;
                                 post.appendChild(message);
 
@@ -250,6 +255,7 @@
                                         if (canteenPageJSON.feed.data[i].comments.data[j].message && (isAdmin || canteenPageJSON.feed.data[i].comments.data[j].message.includes("; [" + userId + ";" + userName + ";]") || canteenPageJSON.feed.data[i].comments.data[j].message.includes("; [" + canteenPageId + ";" + canteenPageName + ";]"))) {
                                             
                                             var comment = document.createElement('div');
+                                            comment.classList.add("comment");
                                             var tempComment = canteenPageJSON.feed.data[i].comments.data[j].message.split("; [");
                                             var tempComment2 = tempComment[1].split(";");
                                             comment.innerHTML = 'Comment from ' + tempComment2[1] + ": " + tempComment[0];
@@ -261,6 +267,7 @@
                                             if(commentJSON && !commentJSON.error) {
                                                 for (let k in commentJSON.data) {
                                                     var replyComment = document.createElement('div');
+                                                    replyComment.classList.add("replyComment");
                                                     var tempReplyComment = commentJSON.data[k].message.split("; [");
                                                     var tempReplyComment2 = tempReplyComment[1].split(";");
                                                     replyComment.innerHTML = '- Reply from ' + tempReplyComment2[1] + ": " + tempReplyComment[0];
@@ -308,7 +315,7 @@
 
                                 // Comment to post
                                 // Comment to post title
-                                var commentToPostTitle = document.createElement('h4');
+                                var commentToPostTitle = document.createElement('div');
                                 commentToPostTitle.innerHTML = "Comment to this post";
                                 post.appendChild(commentToPostTitle);
 
@@ -351,7 +358,7 @@
                     // Post to page
                     if (isAdmin === true) {
                         // Post to page title
-                        var postToPageTitle = document.createElement('h1');
+                        var postToPageTitle = document.createElement('h2');
                         postToPageTitle.innerHTML = "Post to " + canteenPageJSON.name;
                         pageFeed.appendChild(postToPageTitle);
 
@@ -478,13 +485,13 @@
                 <button id="getLongLivedPageTokenButton" onclick="getLongLivedPageToken();" style="display:none">Get Long-lived Page Token</button>
             </div>
 
+            <!-- Page Feed -->
+            <div id="pageFeed"></div>
+
             <!-- Share Webpage Button -->
             <div>
                 <button id="shareWebPageButton" onclick="shareLink('https://quangrolandclone.github.io/index.html');" style="display:none">Share WebPage</button>
             </div>
-
-            <!-- Page Feed -->
-            <div id="pageFeed"></div>
         </div>
     </body>
 </html>
