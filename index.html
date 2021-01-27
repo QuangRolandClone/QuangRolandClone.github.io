@@ -78,17 +78,22 @@
                 background-color: darkgreen;
                 color: white;
                 padding: 5px 20px;
-                margin: 10px 0;
+                margin: 10px 0 10px 30px;
                 font-size: 15px;
                 text-decoration: none;
             }
 
-            .commentMessage {
-                margin: 10px 0 10px 30px;
+            .commentTitle, .postToPageTitle {
+                margin: 10px 0;
+                font-size: 30px;
+            }
+
+            .commentMessage, .postToPageMessage {
+                margin: 10px 0;
                 font-size: 20px;
             }
 
-            .commentButton {
+            .commentButton, .postToPageButton {
                 background-color: darkgreen;
                 color: white;
                 padding: 5px 20px;
@@ -359,7 +364,8 @@
 
                                 // Comment to post
                                 // Comment to post title
-                                var commentToPostTitle = document.createElement('h2');
+                                var commentToPostTitle = document.createElement('div');
+                                commentToPostTitle.classList.add("commentTitle");
                                 commentToPostTitle.innerHTML = "Comment to this post";
                                 post.appendChild(commentToPostTitle);
 
@@ -404,7 +410,8 @@
                     // Post to page
                     if (isAdmin === true) {
                         // Post to page title
-                        var postToPageTitle = document.createElement('h2');
+                        var postToPageTitle = document.createElement('div');
+                        postToPageTitle.classList.add("postToPageTitle");
                         postToPageTitle.innerHTML = "Post to " + shopPageJSON.name;
                         pageFeed.appendChild(postToPageTitle);
 
@@ -413,6 +420,7 @@
                         pageFeed.appendChild(postToPageMessageDiv);
 
                         var postToPageMessage = document.createElement("input");
+                        postToPageMessage.classList.add("postToPageMessage");
                         postToPageMessage.setAttribute("type", "text");
                         postToPageMessage.setAttribute("id", "postToPageMessage");
                         postToPageMessageDiv.appendChild(postToPageMessage);
@@ -422,6 +430,7 @@
                         pageFeed.appendChild(postToPageButtonDiv);
 
                         var postToPageButton = document.createElement("button");
+                        postToPageButton.classList.add("postToPageButton");
                         postToPageButton.innerHTML = "Post to Page";
                         postToPageButton.onclick = async function(){
                             var postToPageJSON = await postToPageThroughAPI(document.getElementById('postToPageMessage').value, shopPageId, shopPageToken);
