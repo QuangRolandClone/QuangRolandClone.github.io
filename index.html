@@ -86,15 +86,15 @@
             // Display the page elements based on the login state
             function displayElements(isLoggedIn) {
                 if (isLoggedIn) {
-                    document.getElementById('loginButton').setAttribute('style', 'display:none');
-                    document.getElementById('logoutButton').setAttribute('style', 'display:block');
+                    document.getElementById('loginButton').setAttribute('style', 'float: right; display: none;');
+                    document.getElementById('logoutButton').setAttribute('style', 'float: right; display: block;');
                     document.getElementById('getLongLivedPageTokenButton').setAttribute('style', 'display:none');
                     document.getElementById('shareWebPageButton').setAttribute('style', 'display:block');
                     document.getElementById('pageFeed').setAttribute('style', 'display:block');
                 }
                 else {
-                    document.getElementById('loginButton').setAttribute('style', 'display:block');
-                    document.getElementById('logoutButton').setAttribute('style', 'display:none');
+                    document.getElementById('loginButton').setAttribute('style', 'float: right; display: block;');
+                    document.getElementById('logoutButton').setAttribute('style', 'float: right; display: none;');
                     document.getElementById('getLongLivedPageTokenButton').setAttribute('style', 'display:none');
                     document.getElementById('shareWebPageButton').setAttribute('style', 'display:block');
                     document.getElementById('pageFeed').setAttribute('style', 'display:none');
@@ -475,8 +475,8 @@
         <div class="navbar">
             <!-- Home Button -->
             <a href="index.html">Home</a>
-            <a id="loginButton" onclick="login();" style="float: right; display: none;">Login</a>
-            <a id="logoutButton" onclick="logout();" style="float: right; display: none;">Logout</a>
+            <p id="loginButton" onclick="login();" style="float: right; display: none;">Login</a>
+            <p id="logoutButton" onclick="logout();" style="float: right; display: none;">Logout</a>
         </div>
 
         <div class="container">
