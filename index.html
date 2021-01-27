@@ -31,14 +31,14 @@
             }
 
             .post {
-                max-width: 50%;
-                padding: 20px;
+                display: inline-block;
+                padding: 30px;
                 border: 1px solid black;
-                margin: 50px;
+                margin: 100px;
             }
 
             .message {
-                font-size: 30px;
+                font-size: 50px;
             }
 
             .postLink a {
@@ -222,11 +222,6 @@
                     console.log(shopPageJSON);
 
                     if (shopPageJSON.feed) {
-                        // Name
-                        var name = document.createElement('h1');
-                        name.innerHTML = shopPageJSON.name;
-                        pageFeed.appendChild(name);
-
                         // Build feed
                         var feed = document.createElement('div');
                         pageFeed.appendChild(feed);
@@ -241,7 +236,7 @@
                                 // Message
                                 var message = document.createElement('div');
                                 message.classList.add("message");
-                                message.innerHTML = 'Post message: ' + shopPageJSON.feed.data[i].message;
+                                message.innerHTML = shopPageName + ': ' + shopPageJSON.feed.data[i].message;
                                 post.appendChild(message);
 
                                 // Link
