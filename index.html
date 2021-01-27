@@ -45,8 +45,8 @@
                 display: inline-block;
                 background-color: darkgreen;
                 color: white;
-                padding: 10px 20px;
-                margin: 20px;
+                padding: 5px 20px;
+                margin: 0;
                 font-size: 15px;
                 text-decoration: none;
             }
@@ -236,7 +236,7 @@
                                 // Message
                                 var message = document.createElement('div');
                                 message.classList.add("message");
-                                message.innerHTML = shopPageName + ':<br>' + shopPageJSON.feed.data[i].message;
+                                message.innerHTML = shopPageJSON.feed.data[i].message;
                                 post.appendChild(message);
 
                                 // Link
