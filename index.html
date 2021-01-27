@@ -31,14 +31,14 @@
             }
 
             .post {
-                max-width: 70%;
+                max-width: 50%;
                 padding: 20px;
                 border: 1px solid black;
                 margin: 50px;
             }
 
             .message {
-                font-size: 40px;
+                font-size: 30px;
             }
 
             .postLink a {
@@ -47,7 +47,7 @@
                 color: white;
                 padding: 10px 20px;
                 margin: 20px;
-                font-size: 20px;
+                font-size: 15px;
                 text-decoration: none;
             }
         </style>
@@ -236,7 +236,7 @@
                                 // Message
                                 var message = document.createElement('div');
                                 message.classList.add("message");
-                                message.innerHTML = shopPageName + ': ' + shopPageJSON.feed.data[i].message;
+                                message.innerHTML = shopPageName + ':<br>' + shopPageJSON.feed.data[i].message;
                                 post.appendChild(message);
 
                                 // Link
